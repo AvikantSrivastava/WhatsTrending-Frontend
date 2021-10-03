@@ -1,3 +1,15 @@
+<script>
+  let dataPromise = getData();
+
+  async function getData() {
+    return fetch("https://twitter-trends-daily.herokuapp.com").then(
+      (response) => {
+        return response.json();
+      }
+    );
+  }
+</script>
+
 <div class="sm-12 md-8 col">
   <div class="paper container-lg margin-bottom-large">
     <h3>
@@ -36,12 +48,55 @@
 
       <div class="content" id="content1">
         <center>
-          <table id="contentIndia" style="text-align:center;" />
+          <table id="contentIndia" style="text-align:center;">
+            <tr>
+              <th>#</th>
+              <th>Trend</th>
+              <th>Positive</th>
+              <th>Negative</th>
+            </tr>
+
+            {#await dataPromise}
+              loading
+            {:then data}
+              {#each data.trends.india as trend}
+                
+                <tr>
+                  <td>{trend.rank}</td>
+                  <td><a href="https://twitter.com/search?q=P{trend.name}">{trend.name}</a></td>
+                  <td>{trend.positive}</td>
+                  <td>{trend.negative}</td>
+                </tr>
+              {/each}
+            {/await}
+          </table>
         </center>
       </div>
 
       <div class="content" id="content2">
-        <table id="contentWorld" style="text-align:center;" />
+        <table id="contentWorld" style="text-align:center;">
+          <tr>
+            <th>#</th>
+            <th>Trend</th>
+            <th>Positive</th>
+            <th>Negative</th>
+          </tr>
+
+          {#await dataPromise}
+              loading
+            {:then data}
+              {#each data.trends.world as trend}
+                
+                <tr>
+                  <td>{trend.rank}</td>
+                  <td><a href="https://twitter.com/search?q=P{trend.name}">{trend.name}</a></td>
+                  <td>{trend.positive}</td>
+                  <td>{trend.negative}</td>
+                </tr>
+              {/each}
+            {/await}
+
+        </table>
       </div>
     </div>
   </div>
