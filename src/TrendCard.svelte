@@ -1,8 +1,17 @@
 <script>
   let dataPromise = getData();
+  let keywordPromise = getKeywords();
 
   async function getData() {
     return fetch("https://twitter-trends-daily.herokuapp.com").then(
+      (response) => {
+        return response.json();
+      }
+    );
+  }
+
+  async function getKeywords() {
+    return fetch("https://twitter-trends-daily.herokuapp.com/keywords").then(
       (response) => {
         return response.json();
       }
@@ -60,10 +69,33 @@
               loading
             {:then data}
               {#each data.trends.india as trend}
-                
                 <tr>
                   <td>{trend.rank}</td>
-                  <td><a href="https://twitter.com/search?q=P{trend.name}">{trend.name}</a></td>
+                  <td>
+                    <div class="collapsible">
+                      <input
+                        id="collapsible{trend.name}"
+                        type="radio"
+                        name="collapsible"
+                      />
+                      <label for="collapsible{trend.name}">{trend.name}</label>
+                      <div class="collapsible-body">
+                        <ul
+                          style="display: inline-block text-align:left; list-style-position: inside;"
+                        >
+                          {#await keywordPromise}
+                            loading
+                          {:then keywords}
+                            <!-- <ul> -->
+                              {#each keywords[trend.name] as keyword}
+                                <li>{keyword}</li>
+                              {/each}
+                            <!-- </ul> -->
+                          {/await}
+                        </ul>
+                      </div>
+                    </div>
+                  </td>
                   <td>{trend.positive}</td>
                   <td>{trend.negative}</td>
                 </tr>
@@ -83,19 +115,41 @@
           </tr>
 
           {#await dataPromise}
-              loading
+            loading
             {:then data}
-              {#each data.trends.world as trend}
-                
-                <tr>
-                  <td>{trend.rank}</td>
-                  <td><a href="https://twitter.com/search?q=P{trend.name}">{trend.name}</a></td>
-                  <td>{trend.positive}</td>
-                  <td>{trend.negative}</td>
-                </tr>
-              {/each}
-            {/await}
-
+            {#each data.trends.world as trend}
+              <tr>
+                <td>{trend.rank}</td>
+                <td>
+                  <div class="collapsible">
+                    <input
+                      id="collapsible{trend.name}"
+                      type="radio"
+                      name="collapsible"
+                    />
+                    <label for="collapsible{trend.name}">{trend.name}</label>
+                    <div class="collapsible-body">
+                      <ul
+                        style="display: inline-block text-align:left; list-style-position: inside;"
+                      >
+                        {#await keywordPromise}
+                          loading
+                        {:then keywords}
+                          <!-- <ul> -->
+                            {#each keywords[trend.name] as keyword}
+                              <li>{keyword}</li>
+                            {/each}
+                          <!-- </ul> -->
+                        {/await}
+                      </ul>
+                    </div>
+                  </div>
+                </td>
+                <td>{trend.positive}</td>
+                <td>{trend.negative}</td>
+              </tr>
+            {/each}
+          {/await}
         </table>
       </div>
     </div>

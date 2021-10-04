@@ -25,7 +25,7 @@
             <div class="collapsible">
               <input
                 id="collapsible{location}"
-                type="checkbox"
+                type="radio"
                 name="collapsible"
               />
               <label for="collapsible{location}">{location}</label>
